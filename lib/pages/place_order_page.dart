@@ -51,6 +51,10 @@ class _OrderScreenState extends State<OrderScreen> {
         .fold(0, (sum, entry) => sum + (entry.key.cost * entry.value));
   }
 
+  double getRemainingBudget() {
+    return remainingBudget;
+  }
+
   Future<void> placeOrder() async {
     final totalCost = getTotalCost();
     final orderItems = currentOrder.entries
@@ -90,10 +94,16 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void updateQuantity(FoodItem item, int x) {
     setState(() {
-      final newQuantity = (foodList[item] ?? 0) + x;
-      foodList[item] = newQuantity;
-      remainingBudget -= item.cost * x;
-      currentOrder[item] = newQuantity;
+      if (foodList[item]!=0 || x>0){
+        final newQuantity = (foodList[item] ?? 0) + x;
+        foodList[item] = newQuantity;
+        remainingBudget -= item.cost * x;
+        currentOrder[item] = newQuantity;
+      }
+      else if (foodList[item]==0 && x<0) {
+
+      }
+
     });
   }
 
@@ -136,6 +146,10 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 Text(
                   'Total: \$${getTotalCost().toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                ),Text(
+                  'Remaining Budget: \$${getRemainingBudget().toStringAsFixed(2)}',
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold),
                 ),
